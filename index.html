@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASYNC // Event Loop Pipeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #07030a; --surface: #12071a; --border: #35134d; --text: #faf5ff; --muted: #c084fc; --accent: #a855f7; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'JetBrains Mono', monospace; padding: 2rem; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        .top-bar { display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+        
+        .async-workspace { margin: 3rem 0; display: grid; grid-template-columns: 1fr 350px; gap: 2rem; align-items: stretch; }
+        .pipeline-box { background: var(--surface); border: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.5rem; }
+        .coroutine-item { background: rgba(168, 85, 247, 0.05); border-left: 3px solid var(--accent); padding: 1rem; display: flex; justify-content: space-between; align-items: center; }
+
+        .control-side { background: var(--surface); border: 1px solid var(--border); padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; }
+        .control-side h1 { font-size: 1.6rem; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; line-height: 1.2; }
+        .control-side p { color: #e9d5ff; opacity: 0.7; font-size: 0.85rem; margin-bottom: 2rem; }
+
+        .btn { background: var(--accent); color: #fff; border: none; padding: 1rem; font-family: inherit; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+        .btn:hover { opacity: 0.9; }
+
+        .bottom-bar { display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+        a { color: var(--muted); text-decoration: none; }
+        a:hover { color: var(--text); }
+
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--surface); border: 1px solid var(--accent); color: var(--text); padding: 1rem 1.5rem; font-size: 0.85rem; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; z-index: 10; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        @media(max-width: 800px) { .async-workspace { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div>// ASYNC_EVENT_LOOP_30</div>
+        <div>CONCURRENCY: NON-BLOCKING</div>
+    </div>
+    <div class="async-workspace">
+        <div class="pipeline-box">
+            <div>
+                <div style="font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem;">ACTIVE COROUTINES PIPELINE</div>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div class="coroutine-item" onclick="showToast('Корутина fetch_user_data выполнена')">
+                        <span>async def fetch_user_data()</span>
+                        <span style="color: var(--muted);">AWAITING IO</span>
+                    </div>
+                    <div class="coroutine-item" onclick="showToast('Корутина process_database_migration выполнена')">
+                        <span>async def process_migration()</span>
+                        <span style="color: var(--muted);">COMPLETED</span>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--muted);">Event loop status: 0 blocked threads, async IO active</div>
+        </div>
+        <div class="control-side">
+            <div>
+                <h1>Асинхронность</h1>
+                <p>Неблокирующий ввод-вывод, корутины async/await, параллельная обработка запросов.</p>
+            </div>
+            <button class="btn" onclick="showToast(' asyncio.gather() успешно завершил все задачи')">Запустить цикл</button>
+        </div>
+    </div>
+    <div class="bottom-bar">
+        <div>wA Studio // Async Systems Lab</div>
+        <a href="https://w4attack.github.io/port/" target="_blank">w3bAttacking © 2026 // wA Studio</a>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script>
+        function showToast(text) {
+            const t = document.getElementById('toast');
+            t.textContent = text;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>
